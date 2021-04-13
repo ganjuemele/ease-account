@@ -1,146 +1,58 @@
 import Layout from "../components/Layout";
+import {NumberPadSection} from "./Money/NumberPad";
+import {TagsSection} from "./Money/Tags";
+import {CategorySection, NotesSection} from "./Money/Category";
 import React from "react";
+import ReactDOM from "react-dom"
 import styled from "styled-components";
 
-const TagsSection = styled.section`
-    background: #FFF;
-    padding: 12px 16px;
-    flex-grow: 1;
-    display:flex;
-    flex-direction: column;
-    justify-content:flex-end;
-    align-items: flex-start;
-  > ol { margin: 0 -12px;
-    > li{
-       background: #D9D9D9;
-       border-radius: 18px;
-       display:inline-block;
-       padding: 3px 18px; 
-       font-size: 14px;
-       margin: 8px 12px;
-    }
-  }
-  > button{
-    background:none; border: none;
-    padding: 2px 4px;
-    border-bottom: 1px solid #333;
-    color: #666;
-    margin-top: 8px;
-  }
-`
-const NotesSection = styled.section`
-  background: #f5f5f5;
-  padding: 0 16px;
-  font-size: 14px;
-  > label {
-    display:flex;
-    align-items: center;
-    > span { margin-right: 16px; white-space: nowrap; }
-    > input {
-      display:block;
-      width: 100%;
-      height: 72px;
-      background: none;
-      border: none;
-    }
-  }
-`
-const CategorySection = styled.section`
-  font-size: 24px;
-  > ul{
-    display:flex;
-    background:#c4c4c4;
-    > li {
-      width: 50%; 
-      text-align:center;
-      padding: 16px 0;
-      position:relative;
-      &.selected::after{
-        content: '';
-        display:block; 
-        height: 3px;
-        background:#333;
-        position:absolute;
-        bottom:0;
-        width: 100%;
-        left: 0;
-      }
-    }
-  }
-`
-const NumberPadSection = styled.section`
-  display:flex;
-  flex-direction: column;
-  > .output{
-    background:white;
-    font-size: 36px;
-    line-height: 72px;
-    text-align:right;
-    padding: 0 16px;
-    box-shadow: inset 0 -5px 5px -5px rgba(0,0,0,0.25),
-                inset 0 5px 5px -5px rgba(0,0,0,0.25);
-  }
-  > .pad{ 
-    > button{
-      font-size: 18px; float: left; width: 25%; height: 64px; border: none;
-      &.ok{ height: 128px; float: right; }
-      &.zero{ width: 50%; }
-      &:nth-child(1){
-        background:#f2f2f2;
-      }
-      &:nth-child(2),
-      &:nth-child(5) {
-        background:#E0E0E0;
-      }
-      &:nth-child(3),
-      &:nth-child(6),
-      &:nth-child(9) {
-        background:#D3D3D3;
-      }
-      &:nth-child(4),
-      &:nth-child(7),
-      &:nth-child(10) {
-        background:#C1C1C1;
-      }
-      &:nth-child(8),
-      &:nth-child(11),
-      &:nth-child(13) {
-        background:#B8B8B8;
-      }
-      &:nth-child(12) {
-        background:#9A9A9A;
-      }
-      &:nth-child(14) {
-        background:#A9A9A9;
-      }
-    }
-  }
-`
-// const TagList = styled.ol`
-//     >li{
-//         background:#d9d9d9;
-//         border-radius:18px;
-//         display:inline-block;
-//         padding:4px 17px;
-//         font-size:14px;
-//     }
-// `
 const MyLayout = styled(Layout)`
   display:flex;
   flex-direction: column;
 `
 
+let inputVal = '0';
+function input (arg: String){
+    if(inputVal==='0'){
+        inputVal=''
+    }
+    inputVal = inputVal + arg;
+    ReactDOM.render(
+        <Output data={inputVal} />,
+        document.getElementById('output')
+    );
+}
+class Output extends React.Component {
+    render() {
+        return (
+            <div className='output' id='output'>{inputVal}</div>
+        )
+    }
+}
+
+const padArr = ['1','2','3','C','4','5','6','CA','7','8','9','OK','0','.'];
+class NumberPad extends React.Component {
+    render() {
+        const listItems = padArr.map((number: string, index) =>
+            <button key={index} onClick={() => input(number)}>{number}</button>
+        );
+        return <div className="pad clearfix" id='pad'>{listItems}</div>
+    }
+}
+const tagsName = ['穿衣', '美食', '房租', '乘车', '带娃', '宠物', '话费', '水电'];
+class TagsLi extends React.Component {
+    render() {
+        const tagLi = tagsName.map((n:String, index) =>
+            <li key={index}>{n}</li>
+        );
+        return <ol>{tagLi}</ol>
+    }
+}
 function Money() {
     return (
-    // @ts-ignore
         <MyLayout>
             <TagsSection>
-                <ol>
-                    <li>衣</li>
-                    <li>食</li>
-                    <li>住</li>
-                    <li>行</li>
-                </ol>
+                <TagsLi/>
                 <button>新增标签</button>
             </TagsSection>
             <NotesSection>
@@ -156,28 +68,11 @@ function Money() {
                 </ul>
             </CategorySection>
             <NumberPadSection>
-                <div className="output">
-                    100
-                </div>
-                <div className="pad clearfix">
-                    <button>1</button>
-                    <button>2</button>
-                    <button>3</button>
-                    <button>删除</button>
-                    <button>4</button>
-                    <button>5</button>
-                    <button>6</button>
-                    <button>清空</button>
-                    <button>7</button>
-                    <button>8</button>
-                    <button>9</button>
-                    <button className="ok">OK</button>
-                    <button className="zero">0</button>
-                    <button className="dot">.</button>
-                </div>
+                <Output />
+                <NumberPad/>
             </NumberPadSection>
         </MyLayout>
-    );
+    )
 }
 
-export default Money
+export default Money;
