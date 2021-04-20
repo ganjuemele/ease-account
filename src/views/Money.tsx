@@ -1,7 +1,8 @@
 import Layout from "../components/Layout";
 import {NumberPadSection} from "./Money/NumberPad";
 import {TagsSection} from "./Money/Tags";
-import {CategorySection, NotesSection} from "./Money/Category";
+import {CategorySection } from "./Money/Category";
+import {NotesSection} from "./Money/Notes";
 import React from "react";
 import ReactDOM from "react-dom"
 import styled from "styled-components";
@@ -18,6 +19,7 @@ function input (arg: String){
     }
     inputVal = inputVal + arg;
     ReactDOM.render(
+    // @ts-ignore
         <Output data={inputVal} />,
         document.getElementById('output')
     );
